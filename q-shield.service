@@ -1,0 +1,14 @@
+[Unit]
+Description=Q-Shield ECDAT Enterprise Post-Quantum Engine
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/app
+ExecStart=/usr/local/bin/uvicorn q_shield.api.app:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
