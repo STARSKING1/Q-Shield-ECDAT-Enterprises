@@ -1,0 +1,39 @@
+{
+  "project": "Q-Shield ECDAT",
+  "module": "Module 3 - Quantum Risk Assessment & Mosca Engine",
+  "mosca_assessment": {
+    "x_shelf_life_years": 10,
+    "y_migration_time_years": 3,
+    "z_crqc_arrival_years": 7,
+    "status": "IN_IMMEDIATE_DANGER",
+    "formula": "10 + 3 = 13 > 7"
+  },
+  "risk_summary": {
+    "CRITICAL": 1,
+    "HIGH": 2,
+    "MEDIUM": 0,
+    "LOW": 0
+  },
+  "findings": [
+    {
+      "name": "RSA",
+      "key_size": 2048,
+      "file": "test_crypto.py",
+      "quantum_risk_level": "CRITICAL",
+      "risk_rationale": "Vulnerable to Shor's Algorithm"
+    },
+    {
+      "name": "SHA-1",
+      "file": "test_crypto.py",
+      "quantum_risk_level": "HIGH",
+      "risk_rationale": "Legacy hash function with high collision/quantum vulnerability"
+    },
+    {
+      "name": "AES",
+      "key_size": 128,
+      "file": "test_crypto.py",
+      "quantum_risk_level": "HIGH",
+      "risk_rationale": "AES-128 suffers bit-security halving under Grover's algorithm"
+    }
+  ]
+}

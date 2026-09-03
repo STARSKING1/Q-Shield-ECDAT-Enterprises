@@ -1,0 +1,18 @@
+{
+  "components": [
+    {
+      "name": "RSA",
+      "key_size": 2048,
+      "file": "test_crypto.py"
+    },
+    {
+      "name": "SHA-1",
+      "file": "test_crypto.py"
+    },
+    {
+      "name": "AES",
+      "key_size": 128,
+      "file": "test_crypto.py"
+    }
+  ]
+}
