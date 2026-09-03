@@ -1,64 +1,13 @@
 {
-  "project": "Q-Shield ECDAT",
-  "module": "Module 3 - Quantum Risk Assessment & Mosca Engine",
-  "mosca_assessment": {
-    "x_shelf_life_years": 10,
-    "y_migration_time_years": 3,
-    "z_crqc_arrival_years": 7,
-    "status": "IN_IMMEDIATE_DANGER",
-    "formula": "10 + 3 = 13 > 7"
+  "risk_status": "IN_IMMEDIATE_DANGER",
+  "is_vulnerable": true,
+  "qvi_score": 92.86,
+  "mosca_variables": {
+    "x_data_shelflife_years": 10.0,
+    "y_migration_years": 3.0,
+    "z_time_to_crqc_years": 7.0
   },
-  "risk_summary": {
-    "CRITICAL": 2,
-    "HIGH": 3,
-    "MEDIUM": 0,
-    "LOW": 0
-  },
-  "findings": [
-    {
-      "name": "RSA",
-      "key_size": 2048,
-      "file": "./test_crypto.py",
-      "line": 2,
-      "type": "Asymmetric Key",
-      "quantum_risk_level": "CRITICAL",
-      "risk_rationale": "Vulnerable to Shor's Algorithm"
-    },
-    {
-      "name": "SHA1",
-      "key_size": null,
-      "file": "./test_crypto.py",
-      "line": 10,
-      "type": "Weak Hash Function",
-      "quantum_risk_level": "HIGH",
-      "risk_rationale": "Legacy hash function with high collision/quantum vulnerability"
-    },
-    {
-      "name": "RSA",
-      "key_size": 2048,
-      "file": "./crypto_sample.py",
-      "line": 2,
-      "type": "Asymmetric Key",
-      "quantum_risk_level": "CRITICAL",
-      "risk_rationale": "Vulnerable to Shor's Algorithm"
-    },
-    {
-      "name": "AES",
-      "key_size": 128,
-      "file": "./crypto_sample.py",
-      "line": 3,
-      "type": "Symmetric Cipher",
-      "quantum_risk_level": "HIGH",
-      "risk_rationale": "AES-128 suffers bit-security halving under Grover's algorithm"
-    },
-    {
-      "name": "SHA1",
-      "key_size": null,
-      "file": "./crypto_sample.py",
-      "line": 8,
-      "type": "Weak Hash Function",
-      "quantum_risk_level": "HIGH",
-      "risk_rationale": "Legacy hash function with high collision/quantum vulnerability"
-    }
-  ]
+  "threat_margin_years": 6.0,
+  "evaluated_assets_count": 5,
+  "recommendation": "Initiate immediate hybrid PQC transition (NIST FIPS 203/204). Data is susceptible to Harvest Now, Decrypt Later attacks."
 }

@@ -1,57 +1,76 @@
 {
-  "project": "Q-Shield ECDAT",
-  "module": "Module 4 - PQC & Hybrid Recommendation Engine",
-  "total_migrations_required": 5,
-  "remediation_roadmap": [
+  "title": "NIST FIPS 203/204/205 PQC Remediation & Key Expansion Plan",
+  "total_flagged_assets": 5,
+  "aggregate_key_memory_overhead": {
+    "total_legacy_key_bytes": 568,
+    "total_pqc_key_bytes": 2464,
+    "overall_overhead_multiplier": "4.34x"
+  },
+  "remediations": [
     {
-      "file": "./test_crypto.py",
-      "vulnerable_algorithm": "RSA",
-      "risk_level": "CRITICAL",
-      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
-      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
-      "hybrid_blueprint": "X25519 + ML-KEM-768",
-      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
-      "bandwidth_impact": "Moderate increase in handshake payload"
+      "asset_name": "RSA-2048",
+      "location": "./test_crypto.py",
+      "line": 2,
+      "nist_standard": "NIST FIPS 203 (ML-KEM)",
+      "recommended_scheme": "ML-KEM-768 (Kyber)",
+      "hybrid_wrapper": "X25519 + ML-KEM-768",
+      "key_expansion": {
+        "legacy_pk_bytes": 256,
+        "pqc_pk_bytes": 1184,
+        "overhead_multiplier": "4.625x"
+      }
     },
     {
-      "file": "./test_crypto.py",
-      "vulnerable_algorithm": "SHA1",
-      "risk_level": "HIGH",
-      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
-      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
-      "hybrid_blueprint": "X25519 + ML-KEM-768",
-      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
-      "bandwidth_impact": "Moderate increase in handshake payload"
+      "asset_name": "SHA1",
+      "location": "./test_crypto.py",
+      "line": 10,
+      "nist_standard": "FIPS 180-4 / FIPS 205 (SLH-DSA)",
+      "recommended_scheme": "SHA-256 Dual Hashing / SLH-DSA-SHA2-128s",
+      "hybrid_wrapper": "SHA-256 + SLH-DSA",
+      "key_expansion": {
+        "legacy_pk_bytes": 20,
+        "pqc_pk_bytes": 32,
+        "overhead_multiplier": "1.6x"
+      }
     },
     {
-      "file": "./crypto_sample.py",
-      "vulnerable_algorithm": "RSA",
-      "risk_level": "CRITICAL",
-      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
-      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
-      "hybrid_blueprint": "X25519 + ML-KEM-768",
-      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
-      "bandwidth_impact": "Moderate increase in handshake payload"
+      "asset_name": "RSA-2048",
+      "location": "./crypto_sample.py",
+      "line": 2,
+      "nist_standard": "NIST FIPS 203 (ML-KEM)",
+      "recommended_scheme": "ML-KEM-768 (Kyber)",
+      "hybrid_wrapper": "X25519 + ML-KEM-768",
+      "key_expansion": {
+        "legacy_pk_bytes": 256,
+        "pqc_pk_bytes": 1184,
+        "overhead_multiplier": "4.625x"
+      }
     },
     {
-      "file": "./crypto_sample.py",
-      "vulnerable_algorithm": "AES",
-      "risk_level": "HIGH",
-      "nist_standard": "NIST SP 800-38 Series",
-      "recommended_pqc": "AES-256-GCM",
-      "hybrid_blueprint": "Direct Upgrade to AES-256-GCM",
-      "key_expansion_overhead": "+100% (16 bytes -> 32 bytes key size)",
-      "bandwidth_impact": "Negligible"
+      "asset_name": "AES-128",
+      "location": "./crypto_sample.py",
+      "line": 3,
+      "nist_standard": "NIST SP 800-38 Series / Grover Halving Mitigation",
+      "recommended_scheme": "AES-256-GCM",
+      "hybrid_wrapper": "AES-256-GCM",
+      "key_expansion": {
+        "legacy_pk_bytes": 16,
+        "pqc_pk_bytes": 32,
+        "overhead_multiplier": "2.0x"
+      }
     },
     {
-      "file": "./crypto_sample.py",
-      "vulnerable_algorithm": "SHA1",
-      "risk_level": "HIGH",
-      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
-      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
-      "hybrid_blueprint": "X25519 + ML-KEM-768",
-      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
-      "bandwidth_impact": "Moderate increase in handshake payload"
+      "asset_name": "SHA1",
+      "location": "./crypto_sample.py",
+      "line": 8,
+      "nist_standard": "FIPS 180-4 / FIPS 205 (SLH-DSA)",
+      "recommended_scheme": "SHA-256 Dual Hashing / SLH-DSA-SHA2-128s",
+      "hybrid_wrapper": "SHA-256 + SLH-DSA",
+      "key_expansion": {
+        "legacy_pk_bytes": 20,
+        "pqc_pk_bytes": 32,
+        "overhead_multiplier": "1.6x"
+      }
     }
   ]
 }
