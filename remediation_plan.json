@@ -1,0 +1,67 @@
+{
+  "project": "Q-Shield ECDAT",
+  "module": "Module 4 - PQC & Hybrid Recommendation Engine",
+  "total_migrations_required": 6,
+  "remediation_roadmap": [
+    {
+      "file": "./test_crypto.py",
+      "vulnerable_algorithm": "RSA",
+      "risk_level": "CRITICAL",
+      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
+      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
+      "hybrid_blueprint": "X25519 + ML-KEM-768",
+      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
+      "bandwidth_impact": "Moderate increase in handshake payload"
+    },
+    {
+      "file": "./test_crypto.py",
+      "vulnerable_algorithm": "AES",
+      "risk_level": "HIGH",
+      "nist_standard": "NIST SP 800-38 Series",
+      "recommended_pqc": "AES-256-GCM",
+      "hybrid_blueprint": "Direct Upgrade to AES-256-GCM",
+      "key_expansion_overhead": "+100% (16 bytes -> 32 bytes key size)",
+      "bandwidth_impact": "Negligible"
+    },
+    {
+      "file": "./test_crypto.py",
+      "vulnerable_algorithm": "SHA-1",
+      "risk_level": "HIGH",
+      "nist_standard": "FIPS 180-4 / FIPS 202",
+      "recommended_pqc": "SHA-256 or SHA3-256 / SLH-DSA (FIPS 205)",
+      "hybrid_blueprint": "SHA-256 Dual Hashing",
+      "key_expansion_overhead": "+60% digest length",
+      "bandwidth_impact": "Negligible"
+    },
+    {
+      "file": "./crypto_sample.py",
+      "vulnerable_algorithm": "RSA",
+      "risk_level": "CRITICAL",
+      "nist_standard": "NIST FIPS 203 (ML-KEM) / FIPS 204 (ML-DSA)",
+      "recommended_pqc": "ML-KEM-768 (Encryption) / ML-DSA-65 (Signatures)",
+      "hybrid_blueprint": "X25519 + ML-KEM-768",
+      "key_expansion_overhead": "+362% (256 bytes -> 1184 bytes public key)",
+      "bandwidth_impact": "Moderate increase in handshake payload"
+    },
+    {
+      "file": "./crypto_sample.py",
+      "vulnerable_algorithm": "AES",
+      "risk_level": "HIGH",
+      "nist_standard": "NIST SP 800-38 Series",
+      "recommended_pqc": "AES-256-GCM",
+      "hybrid_blueprint": "Direct Upgrade to AES-256-GCM",
+      "key_expansion_overhead": "+100% (16 bytes -> 32 bytes key size)",
+      "bandwidth_impact": "Negligible"
+    },
+    {
+      "file": "./crypto_sample.py",
+      "vulnerable_algorithm": "SHA-1",
+      "risk_level": "HIGH",
+      "nist_standard": "FIPS 180-4 / FIPS 202",
+      "recommended_pqc": "SHA-256 or SHA3-256 / SLH-DSA (FIPS 205)",
+      "hybrid_blueprint": "SHA-256 Dual Hashing",
+      "key_expansion_overhead": "+60% digest length",
+      "bandwidth_impact": "Negligible"
+    }
+  ]
+}

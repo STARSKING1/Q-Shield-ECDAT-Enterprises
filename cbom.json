@@ -1,18 +1,38 @@
 {
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:q-shield-cbom-001",
+  "version": 1,
   "components": [
     {
       "name": "RSA",
       "key_size": 2048,
-      "file": "test_crypto.py"
-    },
-    {
-      "name": "SHA-1",
-      "file": "test_crypto.py"
+      "file": "./test_crypto.py"
     },
     {
       "name": "AES",
       "key_size": 128,
-      "file": "test_crypto.py"
+      "file": "./test_crypto.py"
+    },
+    {
+      "name": "SHA-1",
+      "key_size": null,
+      "file": "./test_crypto.py"
+    },
+    {
+      "name": "RSA",
+      "key_size": 2048,
+      "file": "./crypto_sample.py"
+    },
+    {
+      "name": "AES",
+      "key_size": 128,
+      "file": "./crypto_sample.py"
+    },
+    {
+      "name": "SHA-1",
+      "key_size": null,
+      "file": "./crypto_sample.py"
     }
   ]
 }
