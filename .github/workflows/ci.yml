@@ -20,7 +20,7 @@ jobs:
         python-version: "3.11"
 
     - name: Run Full Pipeline (main.py)
-      run: python python main.py
+      run: python main.py
 
     - name: Execute Automated Verification Suite
       run: python test_pipeline.py
