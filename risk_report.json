@@ -1,13 +1,6 @@
 {
-  "risk_status": "IN_IMMEDIATE_DANGER",
-  "is_vulnerable": true,
-  "qvi_score": 92.86,
-  "mosca_variables": {
-    "x_data_shelflife_years": 10.0,
-    "y_migration_years": 3.0,
-    "z_time_to_crqc_years": 7.0
-  },
-  "threat_margin_years": 6.0,
-  "evaluated_assets_count": 5,
-  "recommendation": "Initiate immediate hybrid PQC transition (NIST FIPS 203/204). Data is susceptible to Harvest Now, Decrypt Later attacks."
+  "mosca_inequality": "10.0 + 5.0 > 8.0",
+  "quantum_vulnerable": true,
+  "qvi_score": 93.75,
+  "urgency": "CRITICAL"
 }

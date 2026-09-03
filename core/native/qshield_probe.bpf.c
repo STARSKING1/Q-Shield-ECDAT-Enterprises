@@ -1,11 +1,11 @@
-#define __TARGET_ARCH_arm64
-typedef unsigned int u32;
-typedef unsigned long long u64;
-
-#define SEC(name) __attribute__((section(name), used))
+#include <vmlinux.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
 
 SEC("uprobe/SSL_do_handshake")
-int trace_ssl_handshake(void *ctx) {
+int BPF_UPROBE(trace_ssl_handshake, void *ssl) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    bpf_printk("Q-Shield eBPF: Intercepted SSL_do_handshake in PID %d\n", pid);
     return 0;
 }
 

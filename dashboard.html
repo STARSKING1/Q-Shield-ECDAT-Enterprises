@@ -6,220 +6,108 @@
     <title>Q-Shield ECDAT Enterprise Control Center</title>
     <style>
         :root {
-            --bg-dark: #070a11;
-            --bg-card: #0f172a;
-            --bg-card-hover: #1e293b;
-            --border: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-cyan: #38bdf8;
-            --accent-green: #34d399;
-            --accent-red: #f87171;
-            --accent-amber: #fbbf24;
-            --accent-purple: #c084fc;
+            --bg: #090d16;
+            --card-bg: rgba(18, 26, 43, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #00f2fe;
+            --danger: #ff4b5c;
+            --text: #f0f4f8;
+            --text-dim: #94a3b8;
         }
-        * { box-sizing: border-box; }
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0; padding: 2rem;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 2rem;
         }
         .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
             margin-bottom: 2rem;
         }
-        .header-title h1 {
-            margin: 0; font-size: 1.8rem; color: var(--accent-cyan);
-            display: flex; align-items: center; gap: 0.75rem;
-        }
-        .header-title p { margin: 0.4rem 0 0 0; color: var(--text-secondary); font-size: 0.9rem; }
-        .system-badge {
-            background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent-cyan);
-            color: var(--accent-cyan); padding: 0.5rem 1rem; border-radius: 8px;
-            font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+        .title { font-size: 1.8rem; font-weight: 700; color: #fff; }
+        .badge {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         .grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem; margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
         .card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 1.5rem; transition: transform 0.2s;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
         }
-        .card:hover { transform: translateY(-2px); border-color: var(--accent-cyan); }
-        .card-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-        .card-val { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
-        .danger-text { color: var(--accent-red); }
-        .warning-text { color: var(--accent-amber); }
-        .success-text { color: var(--accent-green); }
-        .card-footer { font-size: 0.8rem; color: var(--text-secondary); }
-        
-        .section-title { font-size: 1.2rem; margin: 2rem 0 1rem 0; color: var(--text-primary); }
-        .table-container {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; overflow: hidden; margin-bottom: 2rem;
+        .metric-title { font-size: 0.9rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        .metric-value { font-size: 2.2rem; font-weight: 800; margin: 0.5rem 0; color: var(--accent); }
+        .danger { color: var(--danger); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
         }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-        th {
-            background: #1e293b; color: var(--text-secondary);
-            padding: 1rem; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;
+        th, td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
         }
-        td { padding: 1rem; border-bottom: 1px solid var(--border); }
-        tr:last-child td { border-bottom: none; }
-        code { background: #070a11; padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--accent-cyan); font-family: monospace; }
-        
-        .badge { padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-        .badge-warning { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid var(--accent-amber); }
-        .badge-success { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
-        .badge-info { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
-        .badge-overhead { background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
-        
-        .status-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-        .status-danger { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+        th { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-title">
-            <h1>🛡️ Q-Shield ECDAT Enterprise Control Center</h1>
-            <p>Post-Quantum Cryptography Readiness & OWASP CycloneDX 1.6 Governance</p>
-        </div>
-        <div class="system-badge">
-            <span class="status-indicator status-danger"></span> LIVE THREAT MONITORING
-        </div>
+        <div class="title">🛡️ Q-Shield ECDAT Enterprise Control Center</div>
+        <div class="badge">NIST FIPS 203/204/205 READY</div>
     </div>
-
     <div class="grid">
         <div class="card">
-            <div class="card-label">Discovered Crypto Assets</div>
-            <div class="card-val warning-text">5</div>
-            <div class="card-footer">Scanned via Tier 1A Static AST Parser</div>
+            <div class="metric-title">Quantum Vulnerability Index (QVI)</div>
+            <div class="metric-value danger">93.75 / 100</div>
+            <p style="margin:0; color: var(--text-dim);">Urgency Status: <strong>CRITICAL</strong></p>
         </div>
         <div class="card">
-            <div class="card-label">Mosca Risk Status</div>
-            <div class="card-val danger-text">IN_IMMEDIATE_DANGER</div>
-            <div class="card-footer">Mosca Formula: x + y > z (10 + 3 > 7)</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Quantum Vulnerability Index</div>
-            <div class="card-val warning-text">92.86/100</div>
-            <div class="card-footer">Urgency Metric calculated by Risk Engine</div>
-        </div>
-        <div class="card">
-            <div class="card-label">Target Standards Compliance</div>
-            <div class="card-val success-text">NIST FIPS 203/204</div>
-            <div class="card-footer">ML-KEM & ML-DSA Hybrid Migration</div>
+            <div class="metric-title">Mosca's Inequality Assessment</div>
+            <div class="metric-value">10.0 + 5.0 > 8.0</div>
+            <p style="margin:0; color: var(--text-dim);">Condition (X + Y > Z) Triggered</p>
         </div>
     </div>
-
-    <div class="section-title">Cryptographic Bill of Materials (OWASP CycloneDX 1.6 CBOM)</div>
-    <div class="table-container">
+    <div class="card">
+        <div class="metric-title">Discovered Cryptographic Assets (CBOM Summary)</div>
         <table>
             <thead>
                 <tr>
-                    <th>Source File / Line</th>
                     <th>Primitive</th>
-                    <th>Category</th>
-                    <th>BOM Reference ID</th>
-                    <th>Threat Level</th>
+                    <th>Vulnerability Type</th>
+                    <th>Target Standard</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                
-        <tr>
-            <td><code>./test_crypto.py:2</code></td>
-            <td><span class="badge badge-warning">RSA-2048</span></td>
-            <td><span class="badge badge-info">ASYMMETRIC</span></td>
-            <td><code>cbom-ref-./test_crypto.py-2-1</code></td>
-            <td><span class="status-indicator status-danger"></span> High Risk</td>
-        </tr>
-        
-        <tr>
-            <td><code>./test_crypto.py:10</code></td>
-            <td><span class="badge badge-warning">SHA1</span></td>
-            <td><span class="badge badge-info">HASH</span></td>
-            <td><code>cbom-ref-./test_crypto.py-10-2</code></td>
-            <td><span class="status-indicator status-danger"></span> High Risk</td>
-        </tr>
-        
-        <tr>
-            <td><code>./crypto_sample.py:2</code></td>
-            <td><span class="badge badge-warning">RSA-2048</span></td>
-            <td><span class="badge badge-info">ASYMMETRIC</span></td>
-            <td><code>cbom-ref-./crypto_sample.py-2-1</code></td>
-            <td><span class="status-indicator status-danger"></span> High Risk</td>
-        </tr>
-        
-        <tr>
-            <td><code>./crypto_sample.py:3</code></td>
-            <td><span class="badge badge-warning">AES-128</span></td>
-            <td><span class="badge badge-info">SYMMETRIC</span></td>
-            <td><code>cbom-ref-./crypto_sample.py-3-2</code></td>
-            <td><span class="status-indicator status-danger"></span> High Risk</td>
-        </tr>
-        
-        <tr>
-            <td><code>./crypto_sample.py:8</code></td>
-            <td><span class="badge badge-warning">SHA1</span></td>
-            <td><span class="badge badge-info">HASH</span></td>
-            <td><code>cbom-ref-./crypto_sample.py-8-3</code></td>
-            <td><span class="status-indicator status-danger"></span> High Risk</td>
-        </tr>
-        
-            </tbody>
-        </table>
-    </div>
-
-    <div class="section-title">NIST Post-Quantum Migration & Remediation Roadmap</div>
-    <div class="table-container">
-        <table>
-            <thead>
                 <tr>
-                    <th>Flagged Primitive</th>
-                    <th>Target Post-Quantum Scheme</th>
-                    <th>NIST FIPS Standard</th>
-                    <th>Key Expansion Overhead</th>
+                    <td>RSA-2048 / RSA-4096</td>
+                    <td>Shor's Algorithm</td>
+                    <td>NIST FIPS 203 (ML-KEM-768)</td>
+                    <td><span style="color: var(--accent);">Auto-Refactor</span></td>
                 </tr>
-            </thead>
-            <tbody>
-                
-        <tr>
-            <td><code>RSA-2048</code></td>
-            <td><span class="badge badge-success">ML-KEM-768 (Kyber)</span></td>
-            <td><code>NIST FIPS 203 (ML-KEM)</code></td>
-            <td><span class="badge badge-overhead">4.625x</span></td>
-        </tr>
-        
-        <tr>
-            <td><code>SHA1</code></td>
-            <td><span class="badge badge-success">SHA-256 Dual Hashing / SLH-DSA-SHA2-128s</span></td>
-            <td><code>FIPS 180-4 / FIPS 205 (SLH-DSA)</code></td>
-            <td><span class="badge badge-overhead">1.6x</span></td>
-        </tr>
-        
-        <tr>
-            <td><code>RSA-2048</code></td>
-            <td><span class="badge badge-success">ML-KEM-768 (Kyber)</span></td>
-            <td><code>NIST FIPS 203 (ML-KEM)</code></td>
-            <td><span class="badge badge-overhead">4.625x</span></td>
-        </tr>
-        
-        <tr>
-            <td><code>AES-128</code></td>
-            <td><span class="badge badge-success">AES-256-GCM</span></td>
-            <td><code>NIST SP 800-38 Series / Grover Halving Mitigation</code></td>
-            <td><span class="badge badge-overhead">2.0x</span></td>
-        </tr>
-        
-        <tr>
-            <td><code>SHA1</code></td>
-            <td><span class="badge badge-success">SHA-256 Dual Hashing / SLH-DSA-SHA2-128s</span></td>
-            <td><code>FIPS 180-4 / FIPS 205 (SLH-DSA)</code></td>
-            <td><span class="badge badge-overhead">1.6x</span></td>
-        </tr>
-        
+                <tr>
+                    <td>ECDSA P-256</td>
+                    <td>Shor's Algorithm</td>
+                    <td>NIST FIPS 204 (ML-DSA-65)</td>
+                    <td><span style="color: var(--accent);">Auto-Refactor</span></td>
+                </tr>
             </tbody>
         </table>
     </div>
