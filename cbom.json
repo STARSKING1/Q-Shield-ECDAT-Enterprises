@@ -1,38 +1,43 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:q-shield-cbom-001",
+  "serialNumber": "urn:uuid:q-shield-cbom-production",
   "version": 1,
   "components": [
     {
       "name": "RSA",
       "key_size": 2048,
-      "file": "./test_crypto.py"
+      "file": "./test_crypto.py",
+      "line": 2,
+      "type": "Asymmetric Key"
     },
     {
-      "name": "AES",
-      "key_size": 128,
-      "file": "./test_crypto.py"
-    },
-    {
-      "name": "SHA-1",
+      "name": "SHA1",
       "key_size": null,
-      "file": "./test_crypto.py"
+      "file": "./test_crypto.py",
+      "line": 10,
+      "type": "Weak Hash Function"
     },
     {
       "name": "RSA",
       "key_size": 2048,
-      "file": "./crypto_sample.py"
+      "file": "./crypto_sample.py",
+      "line": 2,
+      "type": "Asymmetric Key"
     },
     {
       "name": "AES",
       "key_size": 128,
-      "file": "./crypto_sample.py"
+      "file": "./crypto_sample.py",
+      "line": 3,
+      "type": "Symmetric Cipher"
     },
     {
-      "name": "SHA-1",
+      "name": "SHA1",
       "key_size": null,
-      "file": "./crypto_sample.py"
+      "file": "./crypto_sample.py",
+      "line": 8,
+      "type": "Weak Hash Function"
     }
   ]
 }

@@ -10,7 +10,7 @@
   },
   "risk_summary": {
     "CRITICAL": 2,
-    "HIGH": 4,
+    "HIGH": 3,
     "MEDIUM": 0,
     "LOW": 0
   },
@@ -19,20 +19,17 @@
       "name": "RSA",
       "key_size": 2048,
       "file": "./test_crypto.py",
+      "line": 2,
+      "type": "Asymmetric Key",
       "quantum_risk_level": "CRITICAL",
       "risk_rationale": "Vulnerable to Shor's Algorithm"
     },
     {
-      "name": "AES",
-      "key_size": 128,
-      "file": "./test_crypto.py",
-      "quantum_risk_level": "HIGH",
-      "risk_rationale": "AES-128 suffers bit-security halving under Grover's algorithm"
-    },
-    {
-      "name": "SHA-1",
+      "name": "SHA1",
       "key_size": null,
       "file": "./test_crypto.py",
+      "line": 10,
+      "type": "Weak Hash Function",
       "quantum_risk_level": "HIGH",
       "risk_rationale": "Legacy hash function with high collision/quantum vulnerability"
     },
@@ -40,6 +37,8 @@
       "name": "RSA",
       "key_size": 2048,
       "file": "./crypto_sample.py",
+      "line": 2,
+      "type": "Asymmetric Key",
       "quantum_risk_level": "CRITICAL",
       "risk_rationale": "Vulnerable to Shor's Algorithm"
     },
@@ -47,13 +46,17 @@
       "name": "AES",
       "key_size": 128,
       "file": "./crypto_sample.py",
+      "line": 3,
+      "type": "Symmetric Cipher",
       "quantum_risk_level": "HIGH",
       "risk_rationale": "AES-128 suffers bit-security halving under Grover's algorithm"
     },
     {
-      "name": "SHA-1",
+      "name": "SHA1",
       "key_size": null,
       "file": "./crypto_sample.py",
+      "line": 8,
+      "type": "Weak Hash Function",
       "quantum_risk_level": "HIGH",
       "risk_rationale": "Legacy hash function with high collision/quantum vulnerability"
     }
