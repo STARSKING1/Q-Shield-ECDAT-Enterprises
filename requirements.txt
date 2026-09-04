@@ -1,5 +1,5 @@
-pydantic
-fastapi
-uvicorn
-libcst
-httpx
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+libcst>=1.0.0
+pytest>=7.0.0
+httpx>=0.24.0
