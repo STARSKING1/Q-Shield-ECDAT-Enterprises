@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
@@ -5,6 +6,14 @@ from q_shield.parsers.scanner import CryptoScanner
 from q_shield.engine.risk_engine import MoscaRiskEngine
 
 app = FastAPI(title="Q-Shield ECDAT API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ScanRequest(BaseModel):
     path: str
@@ -60,5 +69,18 @@ def refactor_source(payload: RefactorRequest):
     try:
         updated_code = refactor_code(payload.code)
         return {"original": payload.code, "refactored": updated_code}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+from q_shield.engine.remediation import BatchRemediator
+
+class RemediateRequest(PydanticBaseModel):
+    path: str
+
+@app.post("/remediate")
+def remediate_codebase(payload: RemediateRequest):
+    try:
+        results = BatchRemediator.remediate_path(payload.path)
+        return {"status": "success", "results": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

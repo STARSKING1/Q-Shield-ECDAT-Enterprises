@@ -30,3 +30,11 @@ def test_sarif_report_endpoint():
     data = response.json()
     assert data["version"] == "2.1.0"
     assert "runs" in data
+
+def test_remediate_endpoint():
+    payload = {"path": "samples/legacy_app.py"}
+    response = client.post("/remediate", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "success"
+    assert "samples/legacy_app.py" in data["results"]

@@ -1,17 +1,19 @@
-import click
-import json
-from q_shield.parsers.scanner import CryptoScanner
-from q_shield.engine.risk_engine import MoscaRiskEngine
-from q_shield.engine.reports import ReportGenerator
-from q_shield.parsers.refactor import refactor_code
-from q_shield.engine.remediation import BatchRemediator
+with open("q_shield/cli.py", "r") as f:
+    content = f.read()
 
-@click.group()
-def cli():
-    """Q-Shield ECDAT: Enterprise Cryptographic Discovery & Agile Transition Tool"""
-    pass
+old_scan_def = """@cli.command()
+@click.option('--path', default='.', help='Path to scan for vulnerabilities.')
+@click.option('--shelf-life', default=10, help='Shelf life (x)')
+@click.option('--migration-time', default=3, help='Migration time (y)')
+@click.option('--quantum-horizon', default=7, help='Quantum horizon (z)')
+def scan(path, shelf_life, migration_time, quantum_horizon):
+    scanner = CryptoScanner()
+    findings = scanner.scan_path(path)
+    engine = MoscaRiskEngine()
+    result = engine.evaluate(findings, x=shelf_life, y=migration_time, z=quantum_horizon)
+    click.echo(json.dumps(result, indent=2))"""
 
-@cli.command()
+new_scan_def = """@cli.command()
 @click.option('--path', default='.', help='Path to scan for vulnerabilities.')
 @click.option('--shelf-life', default=10, help='Shelf life (x)')
 @click.option('--migration-time', default=3, help='Migration time (y)')
@@ -25,7 +27,7 @@ def scan(path, shelf_life, migration_time, quantum_horizon, format, output):
     result = engine.evaluate(findings, x=shelf_life, y=migration_time, z=quantum_horizon)
     
     if format == 'cbom':
-        output_data = ReportGenerator.generate_cbom(findings, risk_evaluation=result)
+        output_data = ReportGenerator.generate_cbom(findings)
     elif format == 'sarif':
         output_data = ReportGenerator.generate_sarif(findings)
     else:
@@ -37,14 +39,12 @@ def scan(path, shelf_life, migration_time, quantum_horizon, format, output):
             f.write(output_str)
         click.echo(f"Report successfully written to {output}")
     else:
-        click.echo(output_str)
+        click.echo(output_str)"""
 
-@cli.command()
-@click.option('--path', required=True, help='File or directory path to batch refactor.')
-def remediate(path):
-    click.echo(f"Initiating PQC code remediation for: {path}")
-    results = BatchRemediator.remediate_path(path)
-    click.echo(json.dumps(results, indent=2))
-
-if __name__ == '__main__':
-    cli()
+if old_scan_def in content:
+    content = content.replace(old_scan_def, new_scan_def)
+    with open("q_shield/cli.py", "w") as f:
+        f.write(content)
+    print("CLI updated with format and output options.")
+else:
+    print("Could not match scan definition exactly, please inspect cli.py.")

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Q-Shield ECDAT",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "QS001",
+              "name": "QuantumVulnerablePrimitive",
+              "shortDescription": {
+                "text": "Usage of quantum-vulnerable cryptographic algorithm."
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "QS001",
+          "message": {
+            "text": "Vulnerable algorithm detected: None"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "unknown"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

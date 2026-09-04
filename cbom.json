@@ -1,15 +1,28 @@
 {
   "bomFormat": "CycloneDX",
-  "specVersion": "1.6",
-  "serialNumber": "urn:uuid:qshield-scan-2",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-04T18:38:22.089001Z",
+    "tools": [
+      {
+        "vendor": "Q-Shield",
+        "name": "ECDAT",
+        "version": "1.0.0"
+      }
+    ]
+  },
   "components": [
     {
-      "name": "q_shield/crypto_legacy.py",
-      "type": "Source Code",
-      "discovered_primitive": "RSA-2048 / PyCryptodome",
-      "pqc_target_standard": "ML-KEM-768 / FIPS 203",
-      "severity": "CRITICAL",
-      "source_location": "q_shield/crypto_legacy.py:line 2"
+      "type": "cryptographic-asset",
+      "name": "Unknown",
+      "cryptoProperties": {
+        "assetType": "algorithm",
+        "primitive": "RSA-2048",
+        "qlc": {
+          "score": 0
+        }
+      }
     }
   ]
 }
