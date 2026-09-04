@@ -39,3 +39,18 @@ def evaluate_mosca_risk(x: float, y: float, z: float, primitive: str = "RSA-2048
         json.dump(report, f, indent=2)
         
     return report
+
+class MoscaAssessment:
+    """Orchestrator-compatible Mosca Assessment Engine wrapper."""
+    def __init__(self, x: float = 10.0, y: float = 5.0, z: float = 8.0, primitive: str = "RSA-2048", **kwargs):
+        # Support named arguments from main.py orchestrator
+        self.x = kwargs.get("data_shelf_life_x", x)
+        self.y = kwargs.get("migration_time_y", y)
+        self.z = kwargs.get("time_to_crqc_z", z)
+        self.primitive = primitive
+
+    def evaluate(self) -> dict:
+        return evaluate_mosca_risk(self.x, self.y, self.z, self.primitive)
+    
+    def calculate_qvi(self) -> dict:
+        return evaluate_mosca_risk(self.x, self.y, self.z, self.primitive)
