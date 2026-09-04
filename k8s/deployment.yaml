@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: q-shield-ecdat
+  labels:
+    app: q-shield-ecdat
+    tier: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: q-shield-ecdat
+  template:
+    metadata:
+      labels:
+        app: q-shield-ecdat
+    spec:
+      containers:
+      - name: q-shield-app
+        image: qshield/ecdat-enterprise:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: QSHIELD_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: qshield-secrets
+              key: api-key
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
