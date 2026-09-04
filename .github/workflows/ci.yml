@@ -1,4 +1,4 @@
-name: Q-Shield ECDAT Enterprise CI
+name: Q-Shield ECDAT Enterprise Pipeline
 
 on:
   push:
@@ -7,33 +7,70 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  native-build:
+    name: Compile Native Kernel & Memory Probes
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-        cache: 'pip'
+      - name: Install Native Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang gcc make libbpf-dev linux-headers-generic
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install fastapi uvicorn libcst pytest httpx
+      - name: Build eBPF and C Native Binaries
+        run: |
+          cd core/native
+          make all
+          ls -la memory_inspector qshield_probe.bpf.o
 
-    - name: Create Package Markers
-      run: |
-        touch q_shield/__init__.py q_shield/api/__init__.py q_shield/engine/__init__.py q_shield/parsers/__init__.py
+  python-test-suite:
+    name: Test Suite & Security Analysis
+    runs-on: ubuntu-latest
+    needs: native-build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Execute Orchestration Pipeline
-      run: |
-        PYTHONPATH=. python main.py
-        python generate_dashboard.py
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-    - name: Run Pytest Pipeline Suite
-      run: |
-        PYTHONPATH=. pytest tests/test_pipeline.py -v --tb=short
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Pytest Suite
+        env:
+          DATABASE_URL: "sqlite:///./test_qshield.db"
+        run: |
+          pytest tests/test_pipeline.py -v --tb=short
+
+      - name: Run Master Pipeline & Compile Dashboard
+        run: |
+          python main.py
+          test -f cbom.json
+          test -f risk_report.json
+          test -f dashboard.html
+
+  docker-build:
+    name: Docker Image Build Verification
+    runs-on: ubuntu-latest
+    needs: python-test-suite
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Container Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: qshield/ecdat-enterprise:latest
