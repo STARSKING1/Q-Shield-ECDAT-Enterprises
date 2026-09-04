@@ -2,6 +2,10 @@ import libcst as cst
 from libcst import matchers as m
 
 class PQCRemediator(cst.CSTTransformer):
+    """
+    Transforms legacy pycryptodome / cryptography imports into
+    q_shield post-quantum hybrid wrappers via CST manipulation.
+    """
     def __init__(self):
         super().__init__()
         self.transformations_applied = 0

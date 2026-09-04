@@ -9,12 +9,14 @@ client = TestClient(app)
 # --- 1. Mosca Theorem & QVI Tests ---
 
 def test_mosca_critical_vulnerability():
+    # x=10, y=3 => x+y=13 > z=7 (CRITICAL)
     result = evaluate_mosca_risk(x=10, y=3, z=7, primitive="RSA-2048")
     assert result["is_vulnerable"] is True
     assert result["urgency"] == "CRITICAL"
     assert result["qvi_score"] >= 80.0
 
 def test_mosca_safe_primitive():
+    # Symmetric AES-256 with long CRQC horizon
     result = evaluate_mosca_risk(x=2, y=1, z=15, primitive="AES-256")
     assert result["is_vulnerable"] is False
     assert result["urgency"] == "SAFE"
@@ -33,7 +35,7 @@ def generate_key():
     new_code, changes = remediate_code(legacy_code)
     assert changes == 1
     assert "from q_shield.pqc import HybridMLKEM768, MLDSA65" in new_code
-    assert "# Legacy Crypto Module" in new_code
+    assert "# Legacy Crypto Module" in new_code  # Preserves inline comments
 
 def test_cst_remediation_no_op():
     clean_code = "import os\nimport sys\nprint('No cryptography here')"
@@ -51,6 +53,7 @@ def test_api_health_endpoint():
     assert "NIST FIPS 203 (ML-KEM)" in data["standards"]
 
 def test_api_risk_unauthorized():
+    # Request without X-API-Key header
     response = client.get("/api/v1/risk")
     assert response.status_code == 401
 
