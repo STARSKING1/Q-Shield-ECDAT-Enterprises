@@ -1,19 +1,59 @@
-try:
-    import libcst as cst
+import libcst as cst
+from libcst import matchers as m
 
-    class CryptoTransformer(cst.CSTTransformer):
-        def leave_ImportFrom(self, original_node: cst.ImportFrom, updated_node: cst.ImportFrom) -> cst.ImportFrom:
-            if original_node.module and "Crypto.PublicKey" in cst.Module(body=[]).code_for_node(original_node.module):
-                return updated_node.with_changes(
-                    module=cst.parse_expression("q_shield.pqc"),
-                    names=[cst.ImportAlias(name=cst.Name("HybridMLKEM768"))]
+class PQCRemediator(cst.CSTTransformer):
+    def __init__(self):
+        super().__init__()
+        self.transformations_applied = 0
+
+    def leave_ImportFrom(
+        self, original_node: cst.ImportFrom, updated_node: cst.ImportFrom
+    ) -> cst.ImportFrom:
+        # Match 'from Crypto.PublicKey import RSA'
+        if m.matches(
+            original_node,
+            m.ImportFrom(
+                module=m.Attribute(value=m.Name("Crypto"), attr=m.Name("PublicKey"))
+            )
+        ):
+            self.transformations_applied += 1
+            return updated_node.with_changes(
+                module=cst.Attribute(
+                    value=cst.Name("q_shield"),
+                    attr=cst.Name("pqc")
+                ),
+                names=[
+                    cst.ImportAlias(name=cst.Name("HybridMLKEM768")),
+                    cst.ImportAlias(name=cst.Name("MLDSA65"))
+                ]
+            )
+        
+        # Match 'from cryptography.hazmat.primitives.asymmetric import rsa'
+        if m.matches(
+            original_node,
+            m.ImportFrom(
+                module=m.Attribute(
+                    value=m.Attribute(
+                        value=m.Attribute(value=m.Name("cryptography"), attr=m.Name("hazmat")),
+                        attr=m.Name("primitives")
+                    ),
+                    attr=m.Name("asymmetric")
                 )
-            return updated_node
+            )
+        ):
+            self.transformations_applied += 1
+            return updated_node.with_changes(
+                module=cst.Attribute(
+                    value=cst.Name("q_shield"),
+                    attr=cst.Name("pqc")
+                ),
+                names=[cst.ImportAlias(name=cst.Name("FIPS203_MLKEM"))]
+            )
 
-    def remediate_code(source_code: str) -> str:
-        tree = cst.parse_module(source_code)
-        modified_tree = tree.visit(CryptoTransformer())
-        return modified_tree.code
-except ImportError:
-    def remediate_code(source_code: str) -> str:
-        return source_code.replace("from Crypto.PublicKey import RSA", "from q_shield.pqc import HybridMLKEM768")
+        return updated_node
+
+def remediate_code(source_code: str) -> tuple[str, int]:
+    wrapper = cst.MetadataWrapper(cst.parse_module(source_code))
+    transformer = PQCRemediator()
+    modified_tree = wrapper.visit(transformer)
+    return modified_tree.code, transformer.transformations_applied

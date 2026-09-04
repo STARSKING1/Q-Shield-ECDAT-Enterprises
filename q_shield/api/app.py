@@ -31,13 +31,20 @@ async def verify_api_key(key: str = Security(api_key_header)):
 
 @app.get("/health")
 def health():
-    return {"status": "ACTIVE", "standards": ["NIST FIPS 203", "NIST FIPS 204", "NIST FIPS 205"]}
+    return {
+        "status": "healthy", 
+        "standards": [
+            "NIST FIPS 203 (ML-KEM)", 
+            "NIST FIPS 204 (ML-DSA)", 
+            "NIST FIPS 205 (SLH-DSA)"
+        ]
+    }
 
 @app.get("/")
 def get_dashboard():
     if os.path.exists("dashboard.html"):
         return FileResponse("dashboard.html")
-    return JSONResponse({"message": "Dashboard not generated yet. Run generate_dashboard.py"})
+    return JSONResponse({"message": "Dashboard not generated yet."})
 
 @app.get("/api/v1/cbom", dependencies=[Depends(verify_api_key)])
 def get_cbom():
@@ -51,11 +58,4 @@ def get_risk():
     if os.path.exists("risk_report.json"):
         with open("risk_report.json") as f:
             return json.load(f)
-    return {"qvi_score": 0.0}
-
-@app.get("/api/v1/remediation", dependencies=[Depends(verify_api_key)])
-def get_remediation():
-    if os.path.exists("remediation_plan.json"):
-        with open("remediation_plan.json") as f:
-            return json.load(f)
-    return {"remediations": []}
+    return {"qvi_score": 0.0, "urgency": "UNSCANNED"}

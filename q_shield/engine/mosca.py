@@ -1,22 +1,41 @@
 import json
-from dataclasses import dataclass
 
-@dataclass
-class MoscaAssessment:
-    data_shelf_life_x: float
-    migration_time_y: float
-    time_to_crqc_z: float
+ALGORITHM_WEIGHTS = {
+    "RSA-2048": 1.0,
+    "RSA-4096": 1.0,
+    "ECC-256": 1.0,
+    "ECDSA P-256": 1.0,
+    "AES-128": 0.5,
+    "AES-256": 0.1,
+    "SHA-384": 0.1
+}
 
-    def evaluate(self) -> dict:
-        is_vulnerable = (self.data_shelf_life_x + self.migration_time_y) > self.time_to_crqc_z
-        qvi_score = min(100.0, max(0.0, ((self.data_shelf_life_x + self.migration_time_y) / max(0.1, self.time_to_crqc_z)) * 50))
+def evaluate_mosca_risk(x: float, y: float, z: float, primitive: str = "RSA-2048") -> dict:
+    w_alg = ALGORITHM_WEIGHTS.get(primitive, 1.0)
+    is_vulnerable = (x + y) > z
+    
+    # Calculate weighted QVI Score
+    raw_qvi = ((x + y) / max(0.1, z)) * 50.0 * w_alg
+    qvi_score = round(min(100.0, max(0.0, raw_qvi)), 2)
+    
+    if qvi_score >= 80.0:
+        urgency = "CRITICAL"
+    elif qvi_score >= 40.0:
+        urgency = "MODERATE"
+    else:
+        urgency = "SAFE"
         
-        report = {
-            "mosca_inequality": f"{self.data_shelf_life_x} + {self.migration_time_y} > {self.time_to_crqc_z}",
-            "quantum_vulnerable": is_vulnerable,
-            "qvi_score": round(qvi_score, 2),
-            "urgency": "CRITICAL" if is_vulnerable else "MODERATE"
-        }
-        with open("risk_report.json", "w") as f:
-            json.dump(report, f, indent=2)
-        return report
+    report = {
+        "primitive": primitive,
+        "algorithm_weight": w_alg,
+        "mosca_inequality": f"{x} + {y} > {z}",
+        "is_vulnerable": is_vulnerable,
+        "quantum_vulnerable": is_vulnerable,
+        "qvi_score": qvi_score,
+        "urgency": urgency
+    }
+    
+    with open("risk_report.json", "w") as f:
+        json.dump(report, f, indent=2)
+        
+    return report
