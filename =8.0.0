@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform android -- Python 3.13.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /data/data/com.termux/files/home/q-shield-ecdat
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.0
+collected 15 items
+
+tests/test_api.py ..                                                     [ 13%]
+tests/test_crypto.py ..                                                  [ 26%]
+tests/test_pipeline.py ........                                          [ 80%]
+tests/test_q_shield.py ...                                               [100%]
+
+=============================== warnings summary ===============================
+../../usr/lib/python3.13/site-packages/starlette/testclient.py:45
+  /data/data/com.termux/files/usr/lib/python3.13/site-packages/starlette/testclient.py:45: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 15 passed, 1 warning in 2.64s =========================

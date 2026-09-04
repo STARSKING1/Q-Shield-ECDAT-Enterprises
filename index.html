@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-Shield ECDAT Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6">
+  <div id="app" class="max-w-4xl mx-auto space-y-6">
+    <header class="border-b border-slate-800 pb-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">🛡️ Q-Shield ECDAT Console</h1>
+      <button @click="testApi" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded text-sm font-medium">
+        {{ status }}
+      </button>
+    </header>
+    <main class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
+      <h2 class="text-sm font-semibold text-slate-400 uppercase">Backend Connection Test</h2>
+      <p class="text-xs text-slate-300">Click the button above to verify communication with your Flask backend running on port 8000.</p>
+      <pre class="bg-slate-950 p-4 rounded text-xs font-mono text-emerald-400 overflow-x-auto">{{ output }}</pre>
+    </main>
+  </div>
+  <script>
+    const { createApp, ref } = Vue;
+    createApp({
+      setup() {
+        const status = ref('Test API Connection');
+        const output = ref('Waiting for response...');
+
+        const testApi = async () => {
+          status.value = 'Connecting...';
+          try {
+            const res = await fetch('http://localhost:8000/api/transform', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                source_code: "from Crypto.PublicKey import RSA\nkey = RSA.generate(2048)",
+                primitive: "RSA-2048",
+                shelf_life: 10,
+                migration_time: 3,
+                quantum_horizon: 7
+              })
+            });
+            const data = await res.json();
+            output.value = JSON.stringify(data, null, 2);
+            status.value = 'Success!';
+          } catch (err) {
+            output.value = 'Error connecting to Flask backend: ' + err.message;
+            status.value = 'Failed';
+          }
+        };
+
+        return { status, output, testApi };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 {
-  "mosca_inequality": "10.0 + 5.0 > 8.0",
+  "primitive": "RSA-2048",
+  "algorithm_weight": 1.0,
+  "mosca_inequality": "5 + 5 > 8",
+  "is_vulnerable": true,
   "quantum_vulnerable": true,
-  "qvi_score": 93.75,
-  "urgency": "CRITICAL"
+  "qvi_score": 62.5,
+  "urgency": "MODERATE"
 }

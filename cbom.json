@@ -1,118 +1,15 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:q-shield-cbom-production-v2",
-  "version": 1,
+  "serialNumber": "urn:uuid:qshield-scan-2",
   "components": [
     {
-      "type": "cryptographic",
-      "name": "RSA-2048",
-      "version": "1.0.0",
-      "bom_ref": "cbom-ref-./test_crypto.py-2-1",
-      "cryptoProperties": {
-        "assetType": "algorithm",
-        "algorithmProperties": {
-          "primitive": "asymmetric",
-          "parameterSet": null,
-          "executionEnvironment": "software",
-          "implementationPlatform": "generic",
-          "classicalSecurityLevel": 112,
-          "nistQuantumSecurityLevel": 0
-        },
-        "oid": null
-      },
-      "evidence": {
-        "file": "./test_crypto.py",
-        "line": 2
-      }
-    },
-    {
-      "type": "cryptographic",
-      "name": "SHA1",
-      "version": "1.0.0",
-      "bom_ref": "cbom-ref-./test_crypto.py-10-2",
-      "cryptoProperties": {
-        "assetType": "algorithm",
-        "algorithmProperties": {
-          "primitive": "hash",
-          "parameterSet": null,
-          "executionEnvironment": "software",
-          "implementationPlatform": "generic",
-          "classicalSecurityLevel": 0,
-          "nistQuantumSecurityLevel": 0
-        },
-        "oid": null
-      },
-      "evidence": {
-        "file": "./test_crypto.py",
-        "line": 10
-      }
-    },
-    {
-      "type": "cryptographic",
-      "name": "RSA-2048",
-      "version": "1.0.0",
-      "bom_ref": "cbom-ref-./crypto_sample.py-2-1",
-      "cryptoProperties": {
-        "assetType": "algorithm",
-        "algorithmProperties": {
-          "primitive": "asymmetric",
-          "parameterSet": null,
-          "executionEnvironment": "software",
-          "implementationPlatform": "generic",
-          "classicalSecurityLevel": 112,
-          "nistQuantumSecurityLevel": 0
-        },
-        "oid": null
-      },
-      "evidence": {
-        "file": "./crypto_sample.py",
-        "line": 2
-      }
-    },
-    {
-      "type": "cryptographic",
-      "name": "AES-128",
-      "version": "1.0.0",
-      "bom_ref": "cbom-ref-./crypto_sample.py-3-2",
-      "cryptoProperties": {
-        "assetType": "algorithm",
-        "algorithmProperties": {
-          "primitive": "symmetric",
-          "parameterSet": null,
-          "executionEnvironment": "software",
-          "implementationPlatform": "generic",
-          "classicalSecurityLevel": 128,
-          "nistQuantumSecurityLevel": 0
-        },
-        "oid": null
-      },
-      "evidence": {
-        "file": "./crypto_sample.py",
-        "line": 3
-      }
-    },
-    {
-      "type": "cryptographic",
-      "name": "SHA1",
-      "version": "1.0.0",
-      "bom_ref": "cbom-ref-./crypto_sample.py-8-3",
-      "cryptoProperties": {
-        "assetType": "algorithm",
-        "algorithmProperties": {
-          "primitive": "hash",
-          "parameterSet": null,
-          "executionEnvironment": "software",
-          "implementationPlatform": "generic",
-          "classicalSecurityLevel": 0,
-          "nistQuantumSecurityLevel": 0
-        },
-        "oid": null
-      },
-      "evidence": {
-        "file": "./crypto_sample.py",
-        "line": 8
-      }
+      "name": "q_shield/crypto_legacy.py",
+      "type": "Source Code",
+      "discovered_primitive": "RSA-2048 / PyCryptodome",
+      "pqc_target_standard": "ML-KEM-768 / FIPS 203",
+      "severity": "CRITICAL",
+      "source_location": "q_shield/crypto_legacy.py:line 2"
     }
   ]
 }

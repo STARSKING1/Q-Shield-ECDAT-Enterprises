@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Shield ECDAT Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-8 border-b border-gray-800 pb-4">
+            <h1 class="text-3xl font-bold tracking-tight text-emerald-400">Q-Shield ECDAT</h1>
+            <p class="text-sm text-gray-400 mt-1">Enterprise Cryptographic Discovery & Agile Transition Tool</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-300">Run Code Scan</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Target Path / File</label>
+                        <input type="text" id="scanPath" value="vulnerable_sample.py" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Shelf (x)</label>
+                            <input type="number" id="shelfLife" value="10" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Mig (y)</label>
+                            <input type="number" id="migrationTime" value="3" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Quantum (z)</label>
+                            <input type="number" id="quantumHorizon" value="7" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm">
+                        </div>
+                    </div>
+                    <button onclick="triggerScan()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded text-sm transition-colors">Scan Vulnerabilities</button>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-300">AST Refactor (PQC Migration)</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Source Code Input</label>
+                        <textarea id="sourceCodeInput" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm font-mono">from Crypto.PublicKey import RSA
+key = RSA.generate(2048)</textarea>
+                    </div>
+                    <button onclick="triggerRefactor()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded text-sm transition-colors">Refactor to ML-KEM</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+            <h2 class="text-xl font-semibold mb-4 text-indigo-300">Execution Output</h2>
+            <pre id="outputResult" class="bg-gray-900 p-4 rounded text-xs text-emerald-300 overflow-x-auto min-h-[150px]">// Results and reports will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8001';
+
+        async function triggerScan() {
+            const path = document.getElementById('scanPath').value;
+            const shelf_life = parseInt(document.getElementById('shelfLife').value);
+            const migration_time = parseInt(document.getElementById('migrationTime').value);
+            const quantum_horizon = parseInt(document.getElementById('quantumHorizon').value);
+            const output = document.getElementById('outputResult');
+
+            output.textContent = "Executing cryptographic vulnerability scan...";
+            try {
+                const response = await fetch(`${API_URL}/scan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path, shelf_life, migration_time, quantum_horizon })
+                });
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.textContent = "Error: " + err.message;
+            }
+        }
+
+        async function triggerRefactor() {
+            const code = document.getElementById('sourceCodeInput').value;
+            const output = document.getElementById('outputResult');
+
+            output.textContent = "Executing AST code transformation...";
+            try {
+                const response = await fetch(`${API_URL}/refactor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const data = await response.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.textContent = "Error: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>

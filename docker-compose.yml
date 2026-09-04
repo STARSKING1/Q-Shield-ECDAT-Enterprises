@@ -1,61 +1,18 @@
 version: '3.8'
 
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: qshield_api
+  q-shield-api:
+    build: .
     ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://qshield_user:qshield_pass@db:5432/qshield_db
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
+      - "8001:8001"
     restart: always
 
-  worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: qshield_worker
-    command: celery -A q_shield.tasks.worker.celery_app worker --loglevel=info
-    environment:
-      - DATABASE_URL=postgresql://qshield_user:qshield_pass@db:5432/qshield_db
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - api
-      - redis
-    restart: always
-
-  db:
-    image: postgres:15-alpine
-    container_name: qshield_db
-    environment:
-      POSTGRES_USER: qshield_user
-      POSTGRES_PASSWORD: qshield_pass
-      POSTGRES_DB: qshield_db
-    ports:
-      - "5432:5432"
+  q-shield-frontend:
+    image: python:3.11-slim
+    working_dir: /app
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U qshield_user -d qshield_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: always
-
-  redis:
-    image: redis:7-alpine
-    container_name: qshield_redis
+      - ./frontend:/app/frontend
     ports:
-      - "6379:6379"
+      - "8090:8090"
+    command: python3 -m http.server 8090 --directory frontend
     restart: always
-
-volumes:
-  postgres_data:

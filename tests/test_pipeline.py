@@ -33,8 +33,8 @@ def generate_key():
     return key
 """
     new_code, changes = remediate_code(legacy_code)
-    assert changes == 1
-    assert "from q_shield.pqc import HybridMLKEM768, MLDSA65" in new_code
+    assert changes == 2
+    assert "QuantumSafeProvider.generate_mlkem_keypair()" in new_code
     assert "# Legacy Crypto Module" in new_code  # Preserves inline comments
 
 def test_cst_remediation_no_op():

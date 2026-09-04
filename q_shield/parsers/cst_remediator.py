@@ -1,11 +1,9 @@
+from typing import Tuple
 import libcst as cst
 from libcst import matchers as m
 
+
 class PQCRemediator(cst.CSTTransformer):
-    """
-    Transforms legacy pycryptodome / cryptography imports into
-    q_shield post-quantum hybrid wrappers via CST manipulation.
-    """
     def __init__(self):
         super().__init__()
         self.transformations_applied = 0
@@ -13,51 +11,53 @@ class PQCRemediator(cst.CSTTransformer):
     def leave_ImportFrom(
         self, original_node: cst.ImportFrom, updated_node: cst.ImportFrom
     ) -> cst.ImportFrom:
-        # Match 'from Crypto.PublicKey import RSA'
         if m.matches(
             original_node,
             m.ImportFrom(
                 module=m.Attribute(value=m.Name("Crypto"), attr=m.Name("PublicKey"))
-            )
+            ),
         ):
             self.transformations_applied += 1
             return updated_node.with_changes(
-                module=cst.Attribute(
-                    value=cst.Name("q_shield"),
-                    attr=cst.Name("pqc")
-                ),
-                names=[
-                    cst.ImportAlias(name=cst.Name("HybridMLKEM768")),
-                    cst.ImportAlias(name=cst.Name("MLDSA65"))
-                ]
+                module=cst.parse_expression("q_shield.crypto.pqc_provider")
             )
-        
-        # Match 'from cryptography.hazmat.primitives.asymmetric import rsa'
+        return updated_node
+
+    def leave_Call(self, original_node: cst.Call, updated_node: cst.Call) -> cst.Call:
         if m.matches(
             original_node,
-            m.ImportFrom(
-                module=m.Attribute(
-                    value=m.Attribute(
-                        value=m.Attribute(value=m.Name("cryptography"), attr=m.Name("hazmat")),
-                        attr=m.Name("primitives")
-                    ),
-                    attr=m.Name("asymmetric")
-                )
-            )
+            m.Call(
+                func=m.Attribute(value=m.Name("RSA"), attr=m.Name("generate"))
+            ),
         ):
             self.transformations_applied += 1
-            return updated_node.with_changes(
-                module=cst.Attribute(
-                    value=cst.Name("q_shield"),
-                    attr=cst.Name("pqc")
-                ),
-                names=[cst.ImportAlias(name=cst.Name("FIPS203_MLKEM"))]
+            return cst.Call(
+                func=cst.parse_expression("QuantumSafeProvider.generate_mlkem_keypair"),
+                args=[],
+            )
+
+        if m.matches(
+            original_node,
+            m.Call(
+                func=m.Attribute(value=m.Name("ECC"), attr=m.Name("generate"))
+            ),
+        ):
+            self.transformations_applied += 1
+            return cst.Call(
+                func=cst.parse_expression("QuantumSafeProvider.generate_mldsa_keypair"),
+                args=[],
             )
 
         return updated_node
 
-def remediate_code(source_code: str) -> tuple[str, int]:
-    wrapper = cst.MetadataWrapper(cst.parse_module(source_code))
-    transformer = PQCRemediator()
-    modified_tree = wrapper.visit(transformer)
-    return modified_tree.code, transformer.transformations_applied
+
+def remediate_code(source_code: str) -> Tuple[str, int]:
+    if not source_code or not source_code.strip():
+        return source_code, 0
+    try:
+        tree = cst.parse_module(source_code)
+        transformer = PQCRemediator()
+        modified_tree = tree.visit(transformer)
+        return modified_tree.code, transformer.transformations_applied
+    except Exception:
+        return source_code, 0

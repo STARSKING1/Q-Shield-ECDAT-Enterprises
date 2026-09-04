@@ -1,0 +1,2 @@
+[console_scripts]
+qshield = q_shield.cli:cli
