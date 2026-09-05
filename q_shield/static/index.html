@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Shield ECDAT | Quantum Vulnerability & PQC Migration Suite</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .view-container { display: none; }
+        .view-container.active { display: grid; }
+        .nav-tabs { display: flex; gap: 0.5rem; background: #0f172a; padding: 0.5rem; border-bottom: 1px solid #334155; }
+        .nav-tab { background: transparent; border: none; color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .nav-tab.active { background: #1e293b; color: var(--accent-glow); border: 1px solid #334155; }
+        iframe.docs-frame { width: 100%; height: 600px; border: 1px solid #334155; border-radius: 8px; background: #fff; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">Q</div>
+            <div>
+                <h1>Q-Shield ECDAT</h1>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Smart India Hackathon 2026 | Team hacktech</div>
+            </div>
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchView('dashboard', event)">Live Demo Dashboard</button>
+            <button class="nav-tab" onclick="switchView('docs', event)">FastAPI Docs / OpenAPI</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-container active" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
+            <div class="card">
+                <h2>🛡️ Crypto Primitive Scanner & Mosca Risk</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0;">Analyze source code for quantum-vulnerable primitives and calculate the Mosca Inequality risk index.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="scanPath" value="samples/" style="flex: 1; background: #0b0f19; border: 1px solid #334155; color: #fff; padding: 0.75rem; border-radius: 8px;">
+                    <button onclick="runScan()">Run Scan</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <div class="metric-badge">
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Mosca Risk Index</div>
+                        <div class="metric-value" id="moscaValue">--</div>
+                    </div>
+                    <div class="metric-badge">
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Vulnerabilities Found</div>
+                        <div class="metric-value" id="vulnCount" style="color: var(--danger);">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>⚡ AST-Based PQC Refactoring</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0;">Automatically refactor legacy cryptographic calls to NIST-standardized Post-Quantum primitives using LibCST.</p>
+                <textarea id="codeSource">from Crypto.PublicKey import RSA
+key = RSA.generate(2048)
+</textarea>
+                <button onclick="runRemediate()">Refactor Code</button>
+            </div>
+
+            <div class="card full-width" style="grid-column: span 2;">
+                <h2>📊 Assessment Artifacts & Export Hub</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0;">Inspect output reports conforming to standard CycloneDX CBOM and SARIF 2.1.0 specifications.</p>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <button onclick="fetchReport('cbom')" style="background: #0d9488;">Download CBOM (JSON)</button>
+                    <button onclick="fetchReport('sarif')" style="background: #4f46e5;">Download SARIF Report</button>
+                </div>
+                <pre id="outputPreview" style="background: #0b0f19; border: 1px solid #334155; padding: 1rem; border-radius: 8px; color: #38bdf8; max-height: 250px; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.85rem; margin: 0;">// Scan results or reports will appear here...</pre>
+            </div>
+        </div>
+
+        <!-- API DOCS EMBED VIEW -->
+        <div id="view-docs" class="view-container" style="grid-column: span 2; width: 100%;">
+            <div class="card full-width" style="grid-column: span 2;">
+                <h2>📖 Interactive API Documentation (Swagger UI)</h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0;">Direct integration of backend API routes for live testing during the hackathon evaluation.</p>
+                <iframe src="/docs" class="docs-frame"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchView(viewName, event) {
+            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            if (viewName === 'dashboard') {
+                document.getElementById('view-dashboard').classList.add('active');
+                event.target.classList.add('active');
+            } else {
+                document.getElementById('view-docs').classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+
+        async function runScan() {
+            const path = document.getElementById('scanPath').value;
+            try {
+                const res = await fetch(`/api/scan?path=${encodeURIComponent(path)}`);
+                const data = await res.json();
+                document.getElementById('moscaValue').innerText = data.mosca_index || 'N/A';
+                document.getElementById('vulnCount').innerText = data.findings ? data.findings.length : 0;
+                document.getElementById('outputPreview').innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('outputPreview').innerText = 'Error running scan: ' + err;
+            }
+        }
+
+        async function runRemediate() {
+            const code = document.getElementById('codeSource').value;
+            try {
+                const res = await fetch('/api/remediate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code })
+                });
+                const data = await res.json();
+                if (data.refactored_code) {
+                    document.getElementById('codeSource').value = data.refactored_code;
+                    document.getElementById('outputPreview').innerText = '// Refactoring successful:\n' + JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('outputPreview').innerText = JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                document.getElementById('outputPreview').innerText = 'Error during refactoring: ' + err;
+            }
+        }
+
+        async function fetchReport(type) {
+            try {
+                const res = await fetch(`/api/report/${type}`);
+                const data = await res.json();
+                document.getElementById('outputPreview').innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById('outputPreview').innerText = 'Error fetching report: ' + err;
+            }
+        }
+    </script>
+</body>
+</html>
